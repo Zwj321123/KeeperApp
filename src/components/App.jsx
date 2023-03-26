@@ -1,21 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Note from './Note';
-import notes from '../notes';
+import CreateArea from './CreateArea';
 
-//get the nodes from the notes.js file
-//map through the notes array
-//for each note, create a Note component
-//pass the title and content as props to the Note component
-//render the Note component
-function App(){
+
+function App(props){
+    //create a useState hook to store the notes, initial value is an empty array
+    const [notesList, setNotesList] = useState([]);
+
+    //create a function to add a note to the notesList
+    function addNote(note){
+        setNotesList(prevNotes => {
+            return [...prevNotes, note];
+        });
+    }
+
+    //create a function to delete a note from the notesList
+    function deleteNote(id){
+        setNotesList(prevNotes => {
+            return prevNotes.filter((noteItem, index) => {
+                return index !== id;
+            });
+        });
+    }
+
     return(
         <div>
             <Header />
-            {notes.map(noteItem => (
-                <Note
-                    key={noteItem.key}
+            <CreateArea onAdd={addNote}/>
+            {notesList.map((noteItem, index) => (
+                <Note onDelete={deleteNote}
+                    key={index}
+                    id={index}
                     title={noteItem.title}
                     content={noteItem.content}
                 />
